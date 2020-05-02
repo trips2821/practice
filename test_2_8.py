@@ -33,7 +33,7 @@ def test_find_loop():
     for v in values:
         ll.append_value(v)
 
-    tail = ll.find_by_value(9)
+    tail = ll.find_by_value(values[-1])
     looped_node = ll.find_by_value(2)
     tail.next = looped_node
 
