@@ -21,7 +21,7 @@ class Stack():
         self.top = node
 
     def pop(self):
-        self._assert_not_is_empty()
+        self._assert_not_empty()
 
         return_value = self.top.value
         self.top = self.top.next
@@ -29,10 +29,10 @@ class Stack():
         return return_value
 
     def peek(self):
-        self._assert_not_is_empty()
+        self._assert_not_empty()
 
         return self.top.value
 
-    def _assert_not_is_empty(self):
+    def _assert_not_empty(self):
         if self.is_empty():
             raise StackEmptyException
