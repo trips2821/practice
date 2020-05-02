@@ -11,7 +11,6 @@ class LinkedList(LinkedListBase):
         node_to_delete = node.next
         node.next = node_to_delete.next
 
-        del node_to_delete
 
 def test_delete_node_in_place():
     ll = LinkedList()

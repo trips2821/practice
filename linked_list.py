@@ -54,7 +54,6 @@ class LinkedList:
         while ptr is not None:
             if ptr is node:
                 next_node = node.next
-                del node
                 if last_node is not None:
                     last_node.next = next_node
                 else:
