@@ -22,7 +22,6 @@ class Stack(StackBase):
             else:
                 self.top.min = self.top.next.min
 
-
     def get_min(self):
         self._assert_not_empty()
         return self.top.min
