@@ -1,7 +1,5 @@
 import pytest
 
-import math
-
 
 # Given and ordered array, write a func that generates a binary search tree of minimal height
 
@@ -17,9 +15,6 @@ def create_minimal_bst(values, start_index, end_index):
 
     node_value = values[mid_index]
     node = Node(node_value)
-
-    if end_index == start_index:
-        return node
 
     if end_index < start_index:
         return None
@@ -52,7 +47,7 @@ def post_order(node):
 
 
 def test_create_minimal_bst():
-    values = range(13)
+    values = range(17)
 
     bst = create_minimal_bst(values, 0, len(values) - 1)
 
