@@ -1,146 +1,147 @@
-def trailingZeros(n):
-    # write your code here, try to do it without arithmetic operators.
-    factorial = 1
-    for i in range(1, n + 1):
-        factorial = factorial * i
+def fib_rec(n, buff):
+    if n == 0: return 1
+    if n == 1: return 2
 
-    tmp_str = f"{factorial}"
-
-    counter = len(tmp_str) - len(tmp_str.rstrip('0'))
-
-    return counter
-
-def mul(n, m):
-    ans = 0
-    counter = 0
-    while (m):
-        if m % 2 == 1:
-            ans += n << counter
-
-        counter += 1
-        m = int(m / 2)
-
-    return ans
+    if buff[n] != -1:
+        return buff[n]
+    else:
+        buff[n] = fib_rec(n-1, buff) + fib_rec(n-2, buff)
+        return buff[n]
 
 
-# r = mul(13, 3)
-# print(r)
+def fib(n):
+    buff = []
+
+    for i in range(0, n+2):
+        if i < 2:
+            buff.append(i)
+        else:
+            buff.append(buff[i-1] + buff[i-2])
+
+    return buff[n+1]
 
 
-def trailingZeros(n):
-    # write your code here, try to do it without arithmetic operators.
-    factorial = 1
-    for i in range(1, n + 1):
-        factorial = mul(factorial, i)
+from functools import lru_cache
 
-    tmp_str = f"{factorial}"
-    print(tmp_str)
+@lru_cache()
+def fib_no(n):
+    if n == 0:
+        return 1
+    if n == 1:
+        return 2
 
-    counter = len(tmp_str) - len(tmp_str.rstrip('0'))
+    num = fib_no(n-1) + fib_no(n-2)
 
-    return counter
+    return num
 
-# trailingZeros(1001171717)
+# import sys
+# rl = sys.getrecursionlimit()
+# sys.setrecursionlimit(rl * 10)
+# print(fib_no(3000))
 
 
-def digitCounts(k, n):
+
+from itertools import permutations
+
+# for n, i in enumerate(permutations([1,2,3,4,5])):
+#     print(n, i)
+
+ans = []
+def find_num_ways(amount, dominations, d_list=[]):
     count = 0
-    for num in range(n + 1):
-        if num == 0 and k == 0:
-            count += 1
 
-        while num:
-            num, mod = divmod(num, 10)
-            if mod == k:
-                count += 1
+    for d in dominations:
+        tmp_amt = amount - d
+        if tmp_amt == 0:
+            count += 1
+            tmp = d_list+[d]
+            ans.append(tmp)
+            # tmp.sort()
+            # if tmp not in ans:
+            #     ans.append(tmp)
+        elif tmp_amt > 0:
+            count += find_num_ways(tmp_amt, dominations, d_list + [d])
 
     return count
 
-# print(digitCounts(1, 12))
+d = [1,2,3]
+#print(find_num_ways(4, d))
 
-def dicesSum(n):
-    answers = []
 
-    for i in range(1, 7):
-        answers.append([i])
+def change_possibilities_top_down(amount_left, denominations, current_index=0):
+    if amount_left == 0:
+        return 1
 
-    for i in range(n-1):
-        new_rolls = []
-        for rolls in answers:
-            if len(rolls) == i+1:
-                for roll in range(1, 7):
-                    new_rolls.append(rolls + [roll])
+    if amount_left < 0:
+        return 0
 
-        answers = new_rolls
+    if current_index == len(denominations):
+        return 0
 
-    hit_counts = {}
-    for rollset in answers:
-        num = sum(rollset)
-        if num in hit_counts:
-            hit_counts[num] += 1
+    print("checking ways to make %i with %s" % (
+        amount_left,
+        denominations[current_index:],
+    ))
+
+    current_coin = denominations[current_index]
+    # See how many possibilities we can get
+    # for each number of times to use current_coin
+    num_possibilities = 0
+    while amount_left >= 0:
+        num_possibilities += change_possibilities_top_down(
+            amount_left,
+            denominations,
+            current_index + 1,
+        )
+        amount_left -= current_coin
+
+    return num_possibilities
+
+#print(change_possibilities_top_down(7, d,))
+
+def backspaceCompare(S: str, T: str) -> bool:
+    def remove_char(string):
+        index = string.find('#')
+        tmp = string[0:index-1] + string[index + 1:]
+        return tmp
+
+    while True:
+        if '#' in S:
+            S = remove_char(S)
         else:
-            hit_counts[num] = 1
+            break
 
-    combinations = 6 ** n
+    while True:
+        if '#' in T:
+            T = remove_char(T)
+        else:
+            break
 
-    probs = []
-    for each in hit_counts.keys():
-        prob = hit_counts[each] / combinations
-        probs.append([each, prob])
+    return S == T
 
-    return probs
+# backspaceCompare('ab#c', 'ad#c')
 
+# from itertools import permutations
+#
+# for e in permutations([1,2,3,4,5], 3):
+#     print(e)
 
+def ks(w, i):
+    global items
+    if w == 0 or i == -1:
+        return 0
 
+    value_if_item_added, value_if_item_not_added = 0,0
 
-print(dicesSum(3))
+    item_value = items[i][0]
+    item_weight = items[i][1]
+    if w >= item_weight:
+        value_if_item_added = item_value + ks(w-item_weight, i-1)
 
+    value_if_item_not_added = ks(w, i-1)
 
-def findWays(rolls, num):
-    # Create a table to store results of subproblems. One extra
-    # row and column are used for simpilicity (Number of dice
-    # is directly used as row index and sum is directly used
-    # as column index). The entries in 0th row and 0th column
-    # are never used.
-    table = [[0] * (num + 1) for i in range(rolls + 1)]  # Initialize all entries as 0
+    return max(value_if_item_added, value_if_item_not_added)
 
-    faces = 6
-
-    for j in range(1, min(faces + 1, num + 1)):  # Table entries for only one dice
-        table[1][j] = 1
-
-    # Fill rest of the entries in table using recursive relation
-    # i: number of dice, j: sum
-    for i in range(2, rolls + 1):
-        for j in range(1, num + 1):
-            for k in range(1, min(faces + 1, j)):
-                table[i][j] += table[i - 1][j - k]
-
-                # print(dt)
-    # Uncomment above line to see content of table
-
-    return table[-1][-1]
-
-def mergeSortedArray(A, B):
-    total_length = len(A) + len(B)
-    c = [0 for i in range(total_length)]
-
-    a_ptr = len(A) - 1
-    b_ptr = len(B) - 1
-
-    for i in range(total_length - 1, -1, -1):
-        if (a_ptr > -1 and A[a_ptr] >= B[b_ptr]) or b_ptr < 0:
-            c[i] = A[a_ptr]
-            a_ptr -= 1
-            continue
-
-        if (b_ptr > -1 and B[b_ptr] >= A[a_ptr]) or a_ptr < 0:
-            c[i] = B[b_ptr]
-            b_ptr -= 1
-
-    return c
-
-b = [1,2]
-a = [3,4]
-
-mergeSortedArray(a, b)
+items = [(5,5), (2,1), (3,2), (10,5)]
+w_limit = 12
+print(ks(w_limit, len(items)-1))

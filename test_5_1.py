@@ -10,6 +10,7 @@ def insert(original_num, insert_num, position_start, position_end):
     new_num = cleared_bits_num | shifted_insert_num
     return new_num
 
+
 def test_bit_insert_over_zeros():
     m = 0b10011
     n = 0b10000000000
@@ -18,6 +19,7 @@ def test_bit_insert_over_zeros():
 
     expected_result = 0b10001001100
     assert bin(r) == bin(expected_result)
+
 
 def test_bit_insert_over_ones():
     m = 0b10011
